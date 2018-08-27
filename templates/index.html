@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>Flask App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='materialize.min.css') }}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+  <div class="container">
+    <h1>{{ message }}</h1>
+    <ul class="collapsible">
+      {% for item in items%}
+      <li>
+        <div class="collapsible-header"><i class="material-icons">{{ item.icon }}</i>{{ item.header}}</div>
+        <div class="collapsible-body"><span>{{ item.body }}</span></div>
+      </li>
+      {% endfor %}
+  </ul>
+  <p><input type=text size=5 name=a> +
+   <input type=text size=5 name=b> =
+   <span id=result>?</span>
+   <p><a class="btn waves-effect waves-light" href=# id=calculate>calculate server side</a>
+  </div>
+</body>
+<script src="{{ url_for('static',filename='materialize.min.js') }}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+  M.AutoInit();
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  function calculate() {
+    $.getJSON($SCRIPT_ROOT + '/add_numbers', {
+      a: $('input[name="a"]').val(),
+      b: $('input[name="b"]').val()
+    }, response_callback);
+    return false;
+  }
+  function response_callback(data) {
+    $("#result").text(data.result);
+  }
+  $(function() {
+    $('a#calculate').bind('click', calculate);
+  });
+</script>
+</html>
