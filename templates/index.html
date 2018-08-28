@@ -8,18 +8,14 @@
 <body>
   <div class="container">
     <h1>{{ message }}</h1>
-    <ul class="collapsible">
-      {% for item in items%}
-      <li>
-        <div class="collapsible-header"><i class="material-icons">{{ item.icon }}</i>{{ item.header}}</div>
-        <div class="collapsible-body"><span>{{ item.body }}</span></div>
-      </li>
-      {% endfor %}
-  </ul>
-  <p><input type=text size=5 id="a"> +
-   <input type=text size=5 id="b"> =
-   <span id=result>?</span>
-   <p><a class="btn waves-effect waves-light" onclick="add_numbers()" id=calculate>calculate server side</a>
+    <div class="input-field col s12">
+      <input type=text size=5 id="name-box">
+      <label for="name-box">User name(anything you want)</label>
+    </div>
+    <ul class="collection" id="history">
+    </ul>
+    <input type=text size=5 id="text-box">
+    <a class="btn waves-effect waves-light" onclick="send_message()" id=calculate>Send</a>
   </div>
 </body>
 <script src="{{ url_for('static',filename='materialize.min.js') }}"></script>
@@ -28,12 +24,16 @@
   M.AutoInit();
 
   var socket = io.connect('http://' + document.domain + ':' + location.port);
-  socket.on('added_numbers', function(msg) {
-    console.log(msg)
-    document.getElementById('result').innerHTML = msg
+  socket.on('broadcast', function(msg) {
+    var node = document.createElement("li");
+    node.className = "collection-item";
+    var textnode = document.createTextNode(msg.text);
+    node.appendChild(textnode);
+    document.getElementById("history").appendChild(node);
   })
-  function add_numbers() {
-    socket.emit('add_numbers',{'a':document.getElementById('a').value, 'b':document.getElementById('b').value})
+  socket.emit('connecting',{'data':'idk'})
+  function send_message() {
+    socket.emit('send_message',{'text':document.getElementById('name-box').value+': '+document.getElementById('text-box').value})
   }
 </script>
 </html>

@@ -7,21 +7,17 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-  message = "Hello World"
-  items = [
-    {"icon":"whatshot",
-     "header":"Popular",
-     "body":"People absolutely love to eat tide pods"},
-    {"icon":"directions",
-     "header":"Where to go",
-     "body":"I don't know"}
-  ]
-  return render_template("index.html", message=message, items=items)
+  message = "Gurarpan Chatt"
+  return render_template("index.html", message=message)
 
-@socketio.on('add_numbers')
-def add_numbers(data):
+@socketio.on('connecting')
+def connect(data):
+    emit('broadcast',{'text':'Connected'})
 
-    emit('added_numbers',{'sum':data['a']+data['b']})
+@socketio.on('send_message')
+def send_message(data):
+    message = data['text']
+    emit('broadcast',{'text':message},broadcast=True)
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=8080, debug=True)
