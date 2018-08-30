@@ -7,7 +7,7 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-  message = "Gurarpan Chatt"
+  message = "Group-arpan Chatt"
   return render_template("index.html", message=message)
 
 @socketio.on('connecting')

@@ -52,8 +52,10 @@
   })
   socket.emit('connecting',{'data':'idk'})
   function send_message() {
-    socket.emit('send_message',{'text':document.getElementById('name-box').value+': '+document.getElementById('text-box').value})
-    document.getElementById('text-box').value = ''
+    if (document.getElementById('text-box').value != '') {
+      socket.emit('send_message',{'text':document.getElementById('name-box').value+': '+document.getElementById('text-box').value})
+      document.getElementById('text-box').value = ''
+    }
   }
 </script>
 </html>
